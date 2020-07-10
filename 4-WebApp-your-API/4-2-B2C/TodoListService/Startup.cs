@@ -46,8 +46,8 @@ namespace TodoListService
             services.AddAuthorization(options =>
             {
                 // Create policy to check for the scope 'read'
-                options.AddPolicy("ReadScope",
-                    policy => policy.Requirements.Add(new ScopesRequirement("read")));
+                options.AddPolicy("ReadScope", policy => policy.Requirements.Add(new ScopesRequirement("read")));
+                options.AddPolicy("UserImpersonationScope", policy => policy.Requirements.Add(new ScopesRequirement("user_impersonation")));
             });
         }
 

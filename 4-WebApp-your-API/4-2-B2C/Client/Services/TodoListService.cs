@@ -52,7 +52,7 @@ namespace TodoListClient.Services
             var jsonRequest = JsonConvert.SerializeObject(todo);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            var response = await this._httpClient.PostAsync($"{ _TodoListBaseAddress}/api/todolist", jsoncontent);
+            var response = await this._httpClient.PostAsync($"{_TodoListBaseAddress}/api/TodoList", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -69,7 +69,7 @@ namespace TodoListClient.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await this._httpClient.DeleteAsync($"{ _TodoListBaseAddress}/api/todolist/{id}");
+            var response = await this._httpClient.DeleteAsync($"{_TodoListBaseAddress}/api/TodoList/{id}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -86,7 +86,7 @@ namespace TodoListClient.Services
             var jsonRequest = JsonConvert.SerializeObject(todo);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
 
-            var response = await _httpClient.PatchAsync($"{ _TodoListBaseAddress}/api/todolist/{todo.Id}", jsoncontent);
+            var response = await _httpClient.PatchAsync($"{_TodoListBaseAddress}/api/TodoList/{todo.Id}", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -103,7 +103,8 @@ namespace TodoListClient.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.GetAsync($"{ _TodoListBaseAddress}/api/todolist");
+            var url = $"{_TodoListBaseAddress}/api/todolist";
+            var response = await _httpClient.GetAsync(url);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -127,7 +128,7 @@ namespace TodoListClient.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.GetAsync($"{ _TodoListBaseAddress}/api/todolist/{id}");
+            var response = await _httpClient.GetAsync($"{_TodoListBaseAddress}/api/TodoList/{id}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();

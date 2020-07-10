@@ -14,6 +14,10 @@ using TodoListClient.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web.UI;
+using Microsoft.Identity.Web.TokenCacheProviders.Session;
+using Microsoft.Extensions.Caching.Distributed;
+using System;
+using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 
 namespace WebApp_OpenIDConnect_DotNet
 {
@@ -50,10 +54,16 @@ namespace WebApp_OpenIDConnect_DotNet
             // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
             // JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
+            var distCacheConn = Configuration.GetConnectionString("DistCache_ConnectionString");
             // Token acquisition service based on MSAL.NET
             // and chosen token cache implementation
-            services.AddWebAppCallsProtectedWebApi(Configuration, new string[] { Configuration["TodoList:TodoListScope"] }, configSectionName: "AzureAdB2C")
-                    .AddInMemoryTokenCaches();
+            services.AddWebAppCallsProtectedWebApi(Configuration, new string[] {
+                Configuration["TodoList:TodoListScope"] },
+                configSectionName: "AzureAdB2C")
+                .AddDistributedSqlServerCache(options => { options.ConnectionString = distCacheConn; options.SchemaName = "dbo"; options.TableName = "Tokens"; })
+                 //.AddInMemoryTokenCaches()
+                 .AddDistributedTokenCaches()
+                ;
 
             // Add APIs
             services.AddTodoListService(Configuration);
@@ -74,7 +84,7 @@ namespace WebApp_OpenIDConnect_DotNet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, IDistributedCache cache)
         {
             if (env.IsDevelopment())
             {
@@ -101,6 +111,14 @@ namespace WebApp_OpenIDConnect_DotNet
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+            });
+            lifetime.ApplicationStarted.Register(() =>
+            {
+                var currentTimeUTC = DateTime.UtcNow.ToString();
+                byte[] encodedCurrentTimeUTC = System.Text.Encoding.UTF8.GetBytes(currentTimeUTC);
+                var options = new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(20));
+                cache.Set("cachedTimeUTC", encodedCurrentTimeUTC, options);
             });
         }
     }
