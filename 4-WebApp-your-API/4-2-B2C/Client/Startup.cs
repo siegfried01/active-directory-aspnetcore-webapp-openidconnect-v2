@@ -18,6 +18,7 @@ using Microsoft.Identity.Web.TokenCacheProviders.Session;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
+using Alachisoft.NCache.Client;
 
 namespace WebApp_OpenIDConnect_DotNet
 {
@@ -60,8 +61,18 @@ namespace WebApp_OpenIDConnect_DotNet
             services.AddWebAppCallsProtectedWebApi(Configuration, new string[] {
                 Configuration["TodoList:TodoListScope"] },
                 configSectionName: "AzureAdB2C")
-                .AddDistributedSqlServerCache(options => { options.ConnectionString = distCacheConn; options.SchemaName = "dbo"; options.TableName = "Tokens"; })
+
+                 // .AddDistributedSqlServerCache(options => { options.ConnectionString = distCacheConn; options.SchemaName = "dbo"; options.TableName = "Tokens"; })
+                // connection string redis: https://stackexchange.github.io/StackExchange.Redis/Configuration.html
+                 .AddDistributedRedisCache(options => { options.InstanceName = "OIDCTokens"; options.Configuration = "127.0.0.1,password=secretpassword"; }) //https://dotnetcoretutorials.com/2017/01/06/using-redis-cache-net-core/
+                 
                  //.AddInMemoryTokenCaches()
+                 // https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-3.1
+                 //
+                 // This NCache looks like too much trouble.
+                 // pushd ${SRCROOT}/siegfried01gitub/aad-aspnetcore-webapp-openidconnect-v2/4-WebApp-your-API/4-2-B2C/Client
+                 // dotnet add package Alachisoft.NCache.OpenSource.SDK --version 5.0.3
+                 //.AddNCacheDistributedCache(configuration =>  { configuration.CacheName = "demoClusteredCache"; configuration.EnableLogs = true;  configuration.ExceptionsEnabled = true; })
                  .AddDistributedTokenCaches()
                 ;
 
