@@ -1,0 +1,54 @@
+#
+# https://hub.docker.com/repository/docker/siegfried01/todolistclient
+#
+# Begin commands to execute this file using kubectl with bash
+# #kubectl run alpaca-prod --image=gcr.io/kuar-demo/kuard-amd64:1 --replicas=3 --port=8080 --labels="ver=1,app=alpaca,env=prod"
+# kubectl run redis --image=bitnami/redis:latest --replicas=1 --port=6379 --labels="ver=1,app=todo,env=proto,tier=back" --env="REDIS_PASSWORD=secretpassword" --env="REDIS_REPLICATION_MODE=master" --env="REDIS_MASTER_PASSWORD=secretpassword"
+# kubectl expose deployment redis
+# #kubectl run groovytest --image=siegfried01/groovytest:basic001 --replicas=1  --labels="ver=1,app=todo,env=proto,tier=test"
+# kubectl run -i groovytest --image=siegfried01/groovytest:basic001  --labels="ver=1,app=todo,env=proto,tier=test"
+# kubectl run todolistservice --image=siegfried01/todolistservice:latest --replicas=3 --port=44332 --labels="ver=1,app=todo,env=proto,tier=backapi"
+# kubectl expose deployment todolistservice
+# kubectl run todolistclient --image=siegfried01/todolistclient:latest --replicas=3 --port=5000 --labels="ver=1,app=todo,env=proto,tier=front"
+# kubectl expose deployment todolistclient
+# End commands to execute this file using kubectl with bash
+#
+# https://github.com/bitnami/bitnami-docker-redis#how-to-use-this-image
+#
+# Begin commands to execute this file using kubectl with bash
+# docker stack deploy --compose-file docker-compose.yml todostack
+# End commands to execute this file using kubectl with bash
+# 
+# 
+# Begin commands to execute this file using kubectl with bash
+# pushd ${SRCROOT}/siegfried01gitub/aad-aspnetcore-webapp-openidconnect-v2/4-WebApp-your-API/4-2-B2C/Client/
+# docker build -t demo:stable .
+# popd
+# ${SRCROOT}/siegfried01gitub/aad-aspnetcore-webapp-openidconnect-v2/4-WebApp-your-API/4-2-B2C/TodoListService
+# docker build -t demo:stable .
+# popd
+# ${UA}/kompose/kompose-windows-amd64.exe up docker-compose.yml
+# End commands to execute this file using kubectl with bash
+# 
+version: '3.4'
+
+services:
+  todolistclient:
+    image: ${DOCKER_REGISTRY-}todolistclient
+    build:
+      context: .
+      dockerfile: Client/Dockerfile
+
+  todolistservice:
+    image: ${DOCKER_REGISTRY-}todolistservice
+    build:
+      context: .
+      dockerfile: TodoListService/Dockerfile
+
+# https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
+# https://nickjanetakis.com/blog/docker-tip-27-setting-a-password-on-redis-without-a-custom-config
+# https://hub.docker.com/r/bitnami/redis/
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_PASSWORD=secretpassword

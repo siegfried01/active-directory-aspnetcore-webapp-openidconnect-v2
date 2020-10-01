@@ -1,9 +1,18 @@
+# Begin commands to execute this file using Docker with bash
+# echo docker.exe build .
+# docker.exe build .
+# echo docker.exe push siegfried01/todolistclient
+# docker.exe push siegfried01/todolistclient
+# End commands to execute this file using Docker with bash
+#
+# $Log$
+#
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 ARG BUILD_CONFIGURATION=Debug
 ENV ASPNETCORE_ENVIRONMENT=Development
-ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_URLS=http://+:5000
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
-EXPOSE 80
+EXPOSE 5000
 
 WORKDIR /src
 COPY ["Client/TodoListClient.csproj", "Client/"]

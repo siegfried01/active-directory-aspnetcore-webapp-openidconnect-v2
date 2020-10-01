@@ -19,6 +19,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using Alachisoft.NCache.Client;
+using Microsoft.Extensions.Logging;
 
 namespace WebApp_OpenIDConnect_DotNet
 {
@@ -32,7 +33,8 @@ namespace WebApp_OpenIDConnect_DotNet
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services//, Microsoft.Extensions.Logging.ILogger logger
+            )
         {
             services.AddDistributedMemoryCache();
 
@@ -55,6 +57,16 @@ namespace WebApp_OpenIDConnect_DotNet
             // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
             // JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
+            var redis = "redis.ingress-basic.svc.cluster.local";
+            //redis = "service/redis:6379";
+            //redis = "redis";
+            //redis = "redis:6379";
+            //redis = "52.148.149.152";
+            //redis = "localhost";
+            //redis = "10.244.2.8:redis:6379";
+            var redisConfig = $"{redis},abortConnect=false,password=secretpassword"; // https://gist.github.com/JonCole/36ba6f60c274e89014dd  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+            //logger.LogInformation($"using redisConfig={redisConfig}");
+
             var distCacheConn = Configuration.GetConnectionString("DistCache_ConnectionString");
             // Token acquisition service based on MSAL.NET
             // and chosen token cache implementation
@@ -64,7 +76,10 @@ namespace WebApp_OpenIDConnect_DotNet
 
                  // .AddDistributedSqlServerCache(options => { options.ConnectionString = distCacheConn; options.SchemaName = "dbo"; options.TableName = "Tokens"; })
                 // connection string redis: https://stackexchange.github.io/StackExchange.Redis/Configuration.html
-                 .AddDistributedRedisCache(options => { options.InstanceName = "OIDCTokens"; options.Configuration = "127.0.0.1,password=secretpassword"; }) //https://dotnetcoretutorials.com/2017/01/06/using-redis-cache-net-core/
+                 .AddDistributedRedisCache(options => { 
+                     //options.InstanceName = "OIDCTokens";
+                     options.Configuration = redisConfig;
+                 }) //https://dotnetcoretutorials.com/2017/01/06/using-redis-cache-net-core/
                  
                  //.AddInMemoryTokenCaches()
                  // https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-3.1
@@ -97,7 +112,8 @@ namespace WebApp_OpenIDConnect_DotNet
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, IDistributedCache cache)
         {
-            if (env.IsDevelopment())
+            app.UsePathBase(new Microsoft.AspNetCore.Http.PathString("/todolistclient"));
+            if (true || env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

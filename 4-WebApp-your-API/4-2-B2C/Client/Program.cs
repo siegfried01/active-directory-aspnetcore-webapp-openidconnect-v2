@@ -18,6 +18,11 @@ namespace WebApp_OpenIDConnect_DotNet
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.Listen(System.Net.IPAddress.Any, 80);
+                        serverOptions.Listen(System.Net.IPAddress.Any, 443);
+                    });
                 });
     }
 }

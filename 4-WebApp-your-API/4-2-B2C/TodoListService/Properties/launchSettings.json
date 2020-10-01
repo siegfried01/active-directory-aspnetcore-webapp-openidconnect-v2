@@ -27,7 +27,10 @@
     },
     "Azure Dev Spaces": {
       "commandName": "AzureDevSpaces",
-      "launchBrowser": true
+      "launchBrowser": true,
+      "resourceGroup": "rg-todo-temp",
+      "aksName": "aks-todo-006",
+      "subscriptionId": "acc26051-92a5-4ed1-a226-64a187bc27db"
     },
     "Docker": {
       "commandName": "Docker",

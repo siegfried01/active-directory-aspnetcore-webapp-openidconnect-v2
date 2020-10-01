@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5000/",
-      "sslPort": 5000
+      "applicationUrl": "https://localhost:80/",
+      "sslPort": 443
     }
   },
   "profiles": {
@@ -14,18 +14,27 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5000"
+      "applicationUrl": "https://localhost:44360"
     },
     "Azure Dev Spaces": {
       "commandName": "AzureDevSpaces",
-      "launchBrowser": true
+      "launchBrowser": true,
+      "resourceGroup": "rg-todo-temp",
+      "aksName": "aks-todo-006",
+      "subscriptionId": "acc26051-92a5-4ed1-a226-64a187bc27db"
     },
-    "Docker": {
+    "Docker": { // https://docs.microsoft.com/en-us/visualstudio/containers/container-launch-settings?view=vs-2019
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
-      "useSSL": true
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44360"
+      },
+      "httpPort": 51803,
+      "useSSL": true,
+      "sslPort": 44360  
     }
   }
 }

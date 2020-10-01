@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListService", "TodoList
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListClient", "Client\TodoListClient.csproj", "{79AF134C-0F4A-43F8-8C47-75039ED87CE7}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{013E09F6-4280-4657-8835-A75461C1C987}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{79AF134C-0F4A-43F8-8C47-75039ED87CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79AF134C-0F4A-43F8-8C47-75039ED87CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79AF134C-0F4A-43F8-8C47-75039ED87CE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{013E09F6-4280-4657-8835-A75461C1C987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{013E09F6-4280-4657-8835-A75461C1C987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{013E09F6-4280-4657-8835-A75461C1C987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{013E09F6-4280-4657-8835-A75461C1C987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
